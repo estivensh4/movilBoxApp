@@ -63,12 +63,20 @@ dependencies {
     val ktorVersion = "2.3.8"
     implementation("io.ktor:ktor-client-core:$ktorVersion")
     implementation("io.ktor:ktor-client-okhttp:$ktorVersion")
+    implementation("io.ktor:ktor-client-cio:$ktorVersion")
     // Koin
     val koinVersion = "3.6.0-wasm-alpha2"
     implementation(platform("io.insert-koin:koin-bom:$koinVersion"))
     implementation("io.insert-koin:koin-core")
     implementation("io.insert-koin:koin-android")
-    ///
+    implementation("io.insert-koin:koin-androidx-compose")
+    implementation("io.insert-koin:koin-androidx-compose-navigation")
+
+    val nav_version = "2.7.7"
+
+    implementation("androidx.navigation:navigation-compose:$nav_version")
+
+    //
     testImplementation("junit:junit:4.13.2")
     androidTestImplementation("androidx.test.ext:junit:1.1.5")
     androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")
