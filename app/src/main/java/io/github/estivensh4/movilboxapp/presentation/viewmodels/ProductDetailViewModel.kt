@@ -42,7 +42,7 @@ class ProductDetailViewModel(
 }
 
 data class ProductDetailState(
-    val product: Product = Product(),
+    val product: Product? = null,
     val isLoading: Boolean = false,
     val error: String = ""
 )

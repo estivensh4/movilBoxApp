@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Add
 import androidx.compose.material3.CircularProgressIndicator
@@ -36,11 +37,13 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
+import io.github.estivensh4.movilboxapp.domain.model.Product
 import io.github.estivensh4.movilboxapp.presentation.components.CustomSearchBar
 import io.github.estivensh4.movilboxapp.presentation.components.ProductsList
 import io.github.estivensh4.movilboxapp.presentation.theme.MovilBoxAppTheme
 import io.github.estivensh4.movilboxapp.presentation.viewmodels.ProductsViewModel
-import io.github.estivensh4.movilboxapp.util.DataSource
+import io.github.estivensh4.movilboxapp.util.FilterList
+import io.github.estivensh4.movilboxapp.util.capitalize
 import kotlinx.coroutines.launch
 import org.koin.androidx.compose.koinViewModel
 
@@ -50,13 +53,14 @@ fun ProductsScreen(
     productsViewModel: ProductsViewModel = koinViewModel()
 ) {
     var searchProduct by remember { mutableStateOf("") }
+    var filterValue by rememberSaveable { mutableStateOf(FilterList.RATING.name) }
     var active by remember { mutableStateOf(false) }
     val searchHistory = remember { mutableStateListOf("") }
     var selectedCategory by rememberSaveable { mutableIntStateOf(0) }
-    val searchResults by productsViewModel.searchResults.collectAsStateWithLifecycle()
     val productsState by productsViewModel.productsState.collectAsStateWithLifecycle()
     val snackbarHostState = remember { SnackbarHostState() }
     val scope = rememberCoroutineScope()
+    val lazyListState = rememberLazyListState()
 
     LaunchedEffect(productsState) {
         when (productsState.error.isNotEmpty()) {
@@ -68,12 +72,16 @@ fun ProductsScreen(
     Scaffold(
         topBar = {
             CustomSearchBar(
-                searchProduct = productsViewModel.searchQuery,
-                onSearchProductChange = productsViewModel::onSearchQueryChange,
+                searchProduct = searchProduct,
+                onSearchProductChange = { searchProduct = it },
                 onActiveChange = { active = it },
                 searchHistory = searchHistory,
                 active = active,
-                modifier = Modifier.padding(horizontal = 16.dp)
+                modifier = Modifier.padding(horizontal = 16.dp),
+                onClickFilter = {
+                    filterValue = it
+                    scope.launch { lazyListState.animateScrollToItem(0) }
+                }
             )
         },
         floatingActionButton = {
@@ -86,7 +94,7 @@ fun ProductsScreen(
         LazyColumn(
             contentPadding = paddingValues,
             verticalArrangement = Arrangement.Center,
-            horizontalAlignment = Alignment.End
+            horizontalAlignment = Alignment.CenterHorizontally
         ) {
             item {
                 Spacer(modifier = Modifier.size(36.dp))
@@ -102,31 +110,40 @@ fun ProductsScreen(
                 Spacer(modifier = Modifier.size(36.dp))
             }
             item {
-                ScrollableTabRow(
-                    selectedTabIndex = selectedCategory
-                ) {
-                    DataSource.categoriesList.forEachIndexed { index, title ->
-                        Tab(
-                            text = { Text(title) },
-                            selected = selectedCategory == index,
-                            onClick = { selectedCategory = index },
-                        )
+                when {
+                    productsState.categoriesList.isNotEmpty() -> {
+                        ScrollableTabRow(
+                            selectedTabIndex = selectedCategory
+                        ) {
+                            productsState.categoriesList.forEachIndexed { index, title ->
+                                Tab(
+                                    text = {
+                                        Text(
+                                            title.capitalize(),
+                                            fontWeight = FontWeight.Bold
+                                        )
+                                    },
+                                    selected = selectedCategory == index,
+                                    onClick = { selectedCategory = index },
+                                )
+                            }
+                        }
+                        Spacer(modifier = Modifier.size(16.dp))
                     }
                 }
-                Spacer(modifier = Modifier.size(16.dp))
             }
             item {
                 when {
                     productsState.isLoading -> CircularProgressIndicator()
-                    productsState.error.isNotEmpty() -> {
-                        Text(text = productsState.error)
-                    }
                     else -> {
                         ProductsList(
+                            state = lazyListState,
                             navController = navController,
-                            /*filteredProducts = productsState.productsList.sortedByDescending { it.rating }
-                                .filter { it.category == productsState.categoriesList[selectedCategory] }*/
-                            filteredProducts = productsState.productsList
+                            filteredProducts = productsState.productsList.filterProduct(
+                                selectedCategory = productsState.categoriesList[selectedCategory],
+                                filterValue = filterValue,
+                                searchProduct = searchProduct
+                            )
                         )
                     }
                 }
@@ -136,6 +153,49 @@ fun ProductsScreen(
     }
 
 }
+
+fun List<Product>.filterProduct(
+    selectedCategory: String,
+    filterValue: String,
+    searchProduct: String
+): List<Product> {
+    val categoryFiltered = filter { it.category == selectedCategory }
+    val titleFiltered = filter { it.title.contains(searchProduct, ignoreCase = true) }
+    return when (FilterList.getValue(filterValue)) {
+        FilterList.PRICE -> {
+            val priceFiltered = categoryFiltered.sortedByDescending { it.price }
+            priceFiltered.filter { it in titleFiltered }
+        }
+
+        FilterList.DISCOUNT -> {
+            val priceFiltered = categoryFiltered.sortedByDescending { it.discountPercentage }
+            priceFiltered.filter { it in titleFiltered }
+        }
+
+        FilterList.CATEGORY -> {
+            val priceFiltered = categoryFiltered.sortedByDescending { it.category }
+            priceFiltered.filter { it in titleFiltered }
+        }
+
+        FilterList.RATING -> {
+            val priceFiltered = categoryFiltered.sortedByDescending { it.rating }
+            priceFiltered.filter { it in titleFiltered }
+        }
+
+        FilterList.STOCK -> {
+            val priceFiltered = categoryFiltered.sortedByDescending { it.stock }
+            priceFiltered.filter { it in titleFiltered }
+        }
+
+        FilterList.BRAND -> {
+            val priceFiltered = categoryFiltered.sortedByDescending { it.brand }
+            priceFiltered.filter { it in titleFiltered }
+        }
+
+        else -> categoryFiltered.filter { it in titleFiltered }
+    }
+}
+
 
 @Preview
 @Composable
