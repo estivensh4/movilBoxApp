@@ -4,6 +4,7 @@ import androidx.compose.animation.AnimatedContentScope
 import androidx.compose.runtime.Composable
 import androidx.navigation.NamedNavArgument
 import androidx.navigation.NavBackStackEntry
+import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.composable
@@ -21,7 +22,7 @@ fun NavGraphBuilder.route(
     )
 }
 
-fun NavHostController.navigate(route: Router) {
+fun NavController.navigate(route: Router) {
     navigate(route.route) {
         popUpTo(route.route) {
             inclusive = true

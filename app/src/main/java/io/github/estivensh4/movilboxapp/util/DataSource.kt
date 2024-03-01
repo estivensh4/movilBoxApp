@@ -28,7 +28,7 @@ object DataSource {
             price = 549,
             discountPercentage = 12.96,
             rating = 6.69,
-            stock = 94,
+            stock = 0,
             brand = "Apple",
             category = "smartphones",
             thumbnail = "https://cdn.dummyjson.com/product-images/1/thumbnail.jpg",

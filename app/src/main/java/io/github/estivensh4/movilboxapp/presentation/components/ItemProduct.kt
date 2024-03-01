@@ -25,7 +25,8 @@ import io.github.estivensh4.movilboxapp.util.DataSource
 
 @Composable
 fun ItemProduct(
-    product: Product
+    product: Product,
+    onClickItem: () -> Unit
 ) {
     Box {
         Card(
@@ -33,9 +34,7 @@ fun ItemProduct(
                 defaultElevation = 10.dp
             ),
             modifier = Modifier.padding(top = 30.dp),
-            onClick = {
-
-            }
+            onClick = onClickItem
         ) {
             Column(
                 modifier = Modifier
@@ -75,7 +74,10 @@ fun ItemProduct(
 fun ItemProductPrev() {
     MovilBoxAppTheme {
         ItemProduct(
-            product = DataSource.product
+            product = DataSource.product,
+            onClickItem = {
+                
+            }
         )
     }
 }
