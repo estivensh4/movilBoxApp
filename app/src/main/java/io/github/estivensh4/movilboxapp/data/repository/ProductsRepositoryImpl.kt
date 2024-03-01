@@ -16,27 +16,47 @@ class ProductsRepositoryImpl(
 ) : ProductsRepository {
 
     override suspend fun getAllProducts(): Result<GetAllProductsOutput> {
-        return httpClient.get(ENDPOINT_PRODUCTS).body()
+        return try {
+            Result.success(httpClient.get(ENDPOINT_PRODUCTS).body())
+        } catch (ex: Exception) {
+            Result.failure(ex)
+        }
     }
 
     override suspend fun getAllCategories(): Result<List<String>> {
-        return httpClient.get("$ENDPOINT_PRODUCTS/categories").body()
+        return try {
+            Result.success(httpClient.get("$ENDPOINT_PRODUCTS/categories").body())
+        } catch (ex: Exception) {
+            Result.failure(ex)
+        }
     }
 
     override suspend fun addProduct(product: Product): Result<Product> {
-        return httpClient.post("$ENDPOINT_PRODUCTS/add") {
-            setBody(product)
-        }.body()
+        return try {
+            Result.success(httpClient.post("$ENDPOINT_PRODUCTS/add") {
+                setBody(product)
+            }.body())
+        } catch (ex: Exception) {
+            Result.failure(ex)
+        }
     }
 
     override suspend fun updateProduct(id: Int, product: Product): Result<Product> {
-        return httpClient.put("$ENDPOINT_PRODUCTS/$id") {
-            setBody(product)
-        }.body()
+        return try {
+            Result.success(httpClient.put("$ENDPOINT_PRODUCTS/$id") {
+                setBody(product)
+            }.body())
+        } catch (ex: Exception) {
+            Result.failure(ex)
+        }
     }
 
     override suspend fun deleteProduct(id: Int): Result<Product> {
-        return httpClient.delete("$ENDPOINT_PRODUCTS/$id").body()
+        return try {
+            Result.success(httpClient.delete("$ENDPOINT_PRODUCTS/$id").body())
+        } catch (ex: Exception) {
+            Result.failure(ex)
+        }
     }
 
     companion object {
