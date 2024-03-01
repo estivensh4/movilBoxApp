@@ -5,5 +5,6 @@ data class UseCases(
     val deleteProductUseCase: DeleteProductUseCase,
     val getAllCategoriesUseCase: GetAllCategoriesUseCase,
     val getAllProductsUseCase: GetAllProductsUseCase,
-    val updateProductUseCase: UpdateProductUseCase
+    val updateProductUseCase: UpdateProductUseCase,
+    val getSingleProductUseCase: GetSingleProductUseCase
 )

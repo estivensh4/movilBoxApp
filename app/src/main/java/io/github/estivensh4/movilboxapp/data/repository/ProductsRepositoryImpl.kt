@@ -59,6 +59,14 @@ class ProductsRepositoryImpl(
         }
     }
 
+    override suspend fun getSingleProduct(id: Int): Result<Product> {
+        return try {
+            Result.success(httpClient.get("$ENDPOINT_PRODUCTS/$id").body())
+        } catch (ex: Exception) {
+            Result.failure(ex)
+        }
+    }
+
     companion object {
         const val ENDPOINT_PRODUCTS = "products"
     }
