@@ -47,6 +47,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -88,7 +89,13 @@ fun ProductDetailScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text(text = product?.title ?: "...") },
+                title = {
+                    Text(
+                        text = product?.title ?: "...",
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis
+                    )
+                },
                 actions = {
                     IconToggleButton(checked = favorite, onCheckedChange = { favorite = it }) {
                         Icon(
@@ -124,6 +131,7 @@ fun ProductDetailScreen(
                             CircularProgressIndicator()
                         }
                     }
+
                     product != null -> {
                         Card(
                             elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
@@ -149,7 +157,8 @@ fun ProductDetailScreen(
                                             contentAlignment = Alignment.Center
                                         ) {
                                             CustomImageNetwork(
-                                                imageUrl = item, size = 150.dp
+                                                imageUrl = item,
+                                                size = 150.dp
                                             )
                                         }
                                     }
@@ -188,12 +197,21 @@ fun ProductDetailScreen(
                                         fontWeight = FontWeight.Bold
                                     )
                                 )
-                                Text(
-                                    text = "\$${product.price}",
-                                    style = MaterialTheme.typography.titleMedium.copy(
-                                        fontWeight = FontWeight.Bold
+                                Box(
+                                    modifier = Modifier.background(
+                                        MaterialTheme.colorScheme.primary,
+                                        RoundedCornerShape(6.dp)
                                     )
-                                )
+                                ) {
+                                    Text(
+                                        text = "\$${product.price}",
+                                        color = MaterialTheme.colorScheme.onPrimary,
+                                        modifier = Modifier.padding(
+                                            horizontal = 4.dp,
+                                            vertical = 2.dp
+                                        )
+                                    )
+                                }
                             }
                             Spacer(modifier = Modifier.size(8.dp))
                             Row(
@@ -216,7 +234,10 @@ fun ProductDetailScreen(
                                         Text(
                                             text = "No hay stock",
                                             color = MaterialTheme.colorScheme.onError,
-                                            modifier = Modifier.padding(horizontal = 4.dp, vertical = 2.dp)
+                                            modifier = Modifier.padding(
+                                                horizontal = 4.dp,
+                                                vertical = 2.dp
+                                            )
                                         )
                                     }
                                 } else {
