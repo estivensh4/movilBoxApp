@@ -66,9 +66,7 @@ fun ProductDetailScreen(
         product = DataSource.productList.single { it.id == productId }
     }
 
-    val pagerState = rememberPagerState {
-        product.images.size
-    }
+    val pagerState = rememberPagerState { product.images.size }
 
     Scaffold(
         topBar = {
