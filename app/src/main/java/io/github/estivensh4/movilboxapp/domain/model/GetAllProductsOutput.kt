@@ -1,5 +1,8 @@
 package io.github.estivensh4.movilboxapp.domain.model
 
+import kotlinx.serialization.Serializable
+
+@Serializable
 data class GetAllProductsOutput(
     val products: List<Product> = emptyList(),
     val total: Int = 0,
@@ -7,6 +10,7 @@ data class GetAllProductsOutput(
     val limit: Int = 0
 )
 
+@Serializable
 data class Product(
     val id: Int = 0,
     val title: String = "",

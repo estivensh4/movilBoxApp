@@ -5,6 +5,7 @@ import io.github.estivensh4.movilboxapp.domain.useCase.AddProductUseCase
 import io.github.estivensh4.movilboxapp.domain.useCase.DeleteProductUseCase
 import io.github.estivensh4.movilboxapp.domain.useCase.GetAllCategoriesUseCase
 import io.github.estivensh4.movilboxapp.domain.useCase.GetAllProductsUseCase
+import io.github.estivensh4.movilboxapp.domain.useCase.GetSingleProductUseCase
 import io.github.estivensh4.movilboxapp.domain.useCase.UpdateProductUseCase
 import io.github.estivensh4.movilboxapp.domain.useCase.UseCases
 import org.koin.dsl.module
@@ -19,6 +20,7 @@ fun provideUseCases(productsRepository: ProductsRepository): UseCases {
         deleteProductUseCase = DeleteProductUseCase(productsRepository),
         getAllCategoriesUseCase = GetAllCategoriesUseCase(productsRepository),
         getAllProductsUseCase = GetAllProductsUseCase(productsRepository),
-        updateProductUseCase = UpdateProductUseCase(productsRepository)
+        updateProductUseCase = UpdateProductUseCase(productsRepository),
+        getSingleProductUseCase = GetSingleProductUseCase(productsRepository)
     )
 }

@@ -9,16 +9,15 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import io.github.estivensh4.movilboxapp.domain.model.Product
 import io.github.estivensh4.movilboxapp.domain.model.Router
 import io.github.estivensh4.movilboxapp.util.DataSource
 
 @Composable
 fun ProductsList(
-    selectedCategory: String,
-    navController: NavController
+    navController: NavController,
+    filteredProducts: List<Product>
 ) {
-    val filteredProducts = DataSource.productList.sortedByDescending { it.rating }
-        .filter { it.category == selectedCategory }
     if (filteredProducts.isNotEmpty()) {
         LazyRow(
             contentPadding = PaddingValues(horizontal = 16.dp),
