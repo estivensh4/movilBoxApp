@@ -104,11 +104,6 @@ fun ProductsScreen(
                 }
             )
         },
-        floatingActionButton = {
-            FloatingActionButton(onClick = { }) {
-                Icon(imageVector = Icons.Rounded.Add, contentDescription = null)
-            }
-        },
         snackbarHost = { SnackbarHost(snackbarHostState) }
     ) { paddingValues ->
         LazyColumn(
