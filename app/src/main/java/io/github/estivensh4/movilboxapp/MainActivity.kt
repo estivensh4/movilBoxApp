@@ -3,7 +3,6 @@ package io.github.estivensh4.movilboxapp
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.compose.material3.Text
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.rememberNavController
@@ -13,7 +12,6 @@ import io.github.estivensh4.movilboxapp.domain.model.Router
 import io.github.estivensh4.movilboxapp.presentation.screens.ProductDetailScreen
 import io.github.estivensh4.movilboxapp.presentation.screens.ProductsScreen
 import io.github.estivensh4.movilboxapp.presentation.theme.MovilBoxAppTheme
-import io.github.estivensh4.movilboxapp.util.DataSource
 import io.github.estivensh4.movilboxapp.util.route
 
 class MainActivity : ComponentActivity() {

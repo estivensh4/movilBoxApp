@@ -16,7 +16,6 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import io.github.estivensh4.movilboxapp.domain.model.Product
 import io.github.estivensh4.movilboxapp.domain.model.Router
-import io.github.estivensh4.movilboxapp.util.DataSource
 
 @Composable
 fun ProductsList(
@@ -42,7 +41,7 @@ fun ProductsList(
             }
         }
     } else {
-        Box(modifier = modifier.fillMaxSize(), contentAlignment = Alignment.Center){
+        Box(modifier = modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
             Text(
                 text = "there are no products for this category",
                 modifier = Modifier.fillMaxSize(),

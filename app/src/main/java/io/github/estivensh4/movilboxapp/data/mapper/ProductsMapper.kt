@@ -20,7 +20,7 @@ fun Product.toEntity(): ProductEntity {
 }
 
 fun ProductEntity?.toHistory(): Product? {
-    return if (this != null){
+    return if (this != null) {
         Product(
             id = id,
             title = title,
