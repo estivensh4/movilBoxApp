@@ -34,6 +34,7 @@ fun CustomSearchBar(
     modifier: Modifier = Modifier,
     onSearchProductChange: (String) -> Unit,
     onActiveChange: (Boolean) -> Unit,
+    onSearch: (String) -> Unit,
     searchHistory: SnapshotStateList<String>,
     active: Boolean,
     onClickFilter: (String) -> Unit
@@ -45,7 +46,7 @@ fun CustomSearchBar(
             modifier = modifier.fillMaxWidth(),
             query = searchProduct,
             onQueryChange = onSearchProductChange,
-            onSearch = { onActiveChange(false) },
+            onSearch = onSearch,
             active = active,
             onActiveChange = onActiveChange,
             placeholder = {
@@ -81,7 +82,14 @@ fun CustomSearchBar(
         ) {
             searchHistory.forEach {
                 if (it.isNotEmpty()) {
-                    Row(modifier = Modifier.padding(all = 14.dp)) {
+                    Row(
+                        modifier = Modifier
+                            .padding(all = 14.dp)
+                            .clickable {
+                                onSearchProductChange(it)
+                                onActiveChange(false)
+                            }
+                    ) {
                         Icon(imageVector = Icons.Default.History, contentDescription = null)
                         Spacer(modifier = Modifier.width(10.dp))
                         Text(text = it)

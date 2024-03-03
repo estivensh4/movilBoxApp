@@ -6,5 +6,10 @@ data class UseCases(
     val getAllCategoriesUseCase: GetAllCategoriesUseCase,
     val getAllProductsUseCase: GetAllProductsUseCase,
     val updateProductUseCase: UpdateProductUseCase,
-    val getSingleProductUseCase: GetSingleProductUseCase
+    val getSingleProductUseCase: GetSingleProductUseCase,
+    val insertLocalProductUseCase: InsertLocalProductUseCase,
+    val deleteLocalProductByIdUseCase: DeleteLocalProductByIdUseCase,
+    val getSingleLocalProductUseCase: GetSingleLocalProductUseCase,
+    val getHistoryUseCase: GetHistoryUseCase,
+    val insertHistoryUseCase: InsertHistoryUseCase
 )

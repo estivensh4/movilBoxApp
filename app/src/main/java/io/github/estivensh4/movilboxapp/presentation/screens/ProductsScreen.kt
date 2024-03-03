@@ -37,10 +37,12 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
+import io.github.estivensh4.movilboxapp.domain.model.History
 import io.github.estivensh4.movilboxapp.domain.model.Product
 import io.github.estivensh4.movilboxapp.presentation.components.CustomSearchBar
 import io.github.estivensh4.movilboxapp.presentation.components.ProductsList
 import io.github.estivensh4.movilboxapp.presentation.theme.MovilBoxAppTheme
+import io.github.estivensh4.movilboxapp.presentation.viewmodels.ProductsEvents
 import io.github.estivensh4.movilboxapp.presentation.viewmodels.ProductsViewModel
 import io.github.estivensh4.movilboxapp.util.FilterList
 import io.github.estivensh4.movilboxapp.util.capitalize
@@ -69,6 +71,13 @@ fun ProductsScreen(
         }
     }
 
+    LaunchedEffect(productsState) {
+        productsState.history?.let {
+            searchHistory.clear()
+            searchHistory.addAll(it.historyList)
+        }
+    }
+
     Scaffold(
         topBar = {
             CustomSearchBar(
@@ -81,6 +90,17 @@ fun ProductsScreen(
                 onClickFilter = {
                     filterValue = it
                     scope.launch { lazyListState.animateScrollToItem(0) }
+                },
+                onSearch = {
+                    active = false
+                    searchHistory.add(it)
+                    productsViewModel.onEvent(
+                        ProductsEvents.InsertHistory(
+                            History(
+                                historyList = searchHistory
+                            )
+                        )
+                    )
                 }
             )
         },

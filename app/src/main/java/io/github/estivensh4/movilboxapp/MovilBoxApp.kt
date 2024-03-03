@@ -4,6 +4,7 @@ import android.app.Application
 import io.github.estivensh4.movilboxapp.di.dataModule
 import io.github.estivensh4.movilboxapp.di.domainModule
 import io.github.estivensh4.movilboxapp.di.presentationModule
+import org.koin.android.ext.koin.androidContext
 import org.koin.core.context.startKoin
 
 class MovilBoxApp : Application() {
@@ -11,6 +12,7 @@ class MovilBoxApp : Application() {
         super.onCreate()
 
         startKoin {
+            androidContext(this@MovilBoxApp)
             modules(appModule)
         }
     }

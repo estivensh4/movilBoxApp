@@ -2,10 +2,13 @@ package io.github.estivensh4.movilboxapp.presentation.viewmodels
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import io.github.estivensh4.movilboxapp.domain.model.History
 import io.github.estivensh4.movilboxapp.domain.model.Product
 import io.github.estivensh4.movilboxapp.domain.useCase.UseCases
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 
 class ProductsViewModel(
@@ -18,6 +21,13 @@ class ProductsViewModel(
     init {
         getAllCategories()
         getAllProducts()
+        getHistory()
+    }
+
+    fun onEvent(event: ProductsEvents) {
+        when (event) {
+            is ProductsEvents.InsertHistory -> insertHistory(event.history)
+        }
     }
 
     private fun getAllCategories() {
@@ -55,11 +65,29 @@ class ProductsViewModel(
                 }
         }
     }
+
+    private fun insertHistory(history: History) {
+        viewModelScope.launch {
+            useCases.insertHistoryUseCase(history)
+        }
+    }
+
+    private fun getHistory() {
+        useCases.getHistoryUseCase()
+            .onEach {
+                _productsState.value = _productsState.value.copy(history = it)
+            }.launchIn(viewModelScope)
+    }
 }
 
 data class ProductsState(
     val categoriesList: List<String> = emptyList(),
     val productsList: List<Product> = emptyList(),
     val isLoading: Boolean = false,
-    val error: String = ""
+    val error: String = "",
+    val history: History? = null
 )
+
+sealed class ProductsEvents {
+    data class InsertHistory(val history: History) : ProductsEvents()
+}

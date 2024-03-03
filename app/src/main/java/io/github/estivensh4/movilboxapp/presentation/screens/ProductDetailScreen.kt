@@ -75,6 +75,11 @@ fun ProductDetailScreen(
 
     LaunchedEffect(true) {
         productDetailViewModel.onEvent(ProductDetailEvent.GetSingleProduct(productId))
+        productDetailViewModel.onEvent(ProductDetailEvent.GetSingleLocalProduct(productId))
+    }
+
+    LaunchedEffect(productDetailState.localProduct) {
+        favorite = productDetailState.localProduct != null
     }
 
     val pagerState = rememberPagerState { product?.images?.size ?: 0 }
@@ -97,7 +102,20 @@ fun ProductDetailScreen(
                     )
                 },
                 actions = {
-                    IconToggleButton(checked = favorite, onCheckedChange = { favorite = it }) {
+                    IconToggleButton(
+                        checked = favorite,
+                        onCheckedChange = { newValue ->
+                            favorite = newValue
+                            product?.let {
+                                productDetailViewModel.onEvent(
+                                    ProductDetailEvent.ToggleLocalProduct(
+                                        favorite,
+                                        it
+                                    )
+                                )
+                            }
+                        }
+                    ) {
                         Icon(
                             imageVector = if (favorite) Icons.Rounded.Favorite else Icons.Rounded.FavoriteBorder,
                             contentDescription = null
@@ -232,7 +250,7 @@ fun ProductDetailScreen(
                                         )
                                     ) {
                                         Text(
-                                            text = "No hay stock",
+                                            text = "No stock",
                                             color = MaterialTheme.colorScheme.onError,
                                             modifier = Modifier.padding(
                                                 horizontal = 4.dp,

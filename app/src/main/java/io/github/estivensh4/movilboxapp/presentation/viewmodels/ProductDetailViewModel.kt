@@ -6,6 +6,8 @@ import io.github.estivensh4.movilboxapp.domain.model.Product
 import io.github.estivensh4.movilboxapp.domain.useCase.UseCases
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 
 class ProductDetailViewModel(
@@ -18,6 +20,12 @@ class ProductDetailViewModel(
     fun onEvent(event: ProductDetailEvent) {
         when (event) {
             is ProductDetailEvent.GetSingleProduct -> getSingleProduct(event.id)
+            is ProductDetailEvent.ToggleLocalProduct -> toggleLocalProduct(
+                event.favorite,
+                event.product
+            )
+
+            is ProductDetailEvent.GetSingleLocalProduct -> getSingleLocalProduct(event.id)
         }
     }
 
@@ -39,14 +47,40 @@ class ProductDetailViewModel(
         }
     }
 
+    private fun toggleLocalProduct(
+        favorite: Boolean,
+        product: Product
+    ) {
+        viewModelScope.launch {
+            if (favorite) {
+                useCases.insertLocalProductUseCase(product)
+            } else {
+                useCases.deleteLocalProductByIdUseCase(product.id)
+            }
+        }
+    }
+
+    private fun getSingleLocalProduct(id: Int) {
+        useCases.getSingleLocalProductUseCase(id)
+            .onEach {
+                _productDetailState.value = _productDetailState.value.copy(
+                    localProduct = it
+                )
+            }.launchIn(viewModelScope)
+    }
+
 }
 
 data class ProductDetailState(
     val product: Product? = null,
+    val localProduct: Product? = null,
     val isLoading: Boolean = false,
     val error: String = ""
 )
 
 sealed class ProductDetailEvent {
     data class GetSingleProduct(val id: Int) : ProductDetailEvent()
+    data class GetSingleLocalProduct(val id: Int) : ProductDetailEvent()
+    data class ToggleLocalProduct(val favorite: Boolean, val product: Product) :
+        ProductDetailEvent()
 }
