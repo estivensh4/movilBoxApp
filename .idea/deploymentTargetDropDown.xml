@@ -2,7 +2,16 @@
 <project version="4">
   <component name="deploymentTargetDropDown">
     <value>
+      <entry key="RepositoryImplTest">
+        <State />
+      </entry>
       <entry key="app">
+        <State />
+      </entry>
+      <entry key="getAllProducts()">
+        <State />
+      </entry>
+      <entry key="getAllProductsReturnFailure()">
         <State />
       </entry>
     </value>

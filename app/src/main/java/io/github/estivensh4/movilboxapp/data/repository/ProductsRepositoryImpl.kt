@@ -40,34 +40,6 @@ class ProductsRepositoryImpl(
         }
     }
 
-    override suspend fun addProduct(product: Product): Result<Product> {
-        return try {
-            Result.success(httpClient.post("$ENDPOINT_PRODUCTS/add") {
-                setBody(product)
-            }.body())
-        } catch (ex: Exception) {
-            Result.failure(ex)
-        }
-    }
-
-    override suspend fun updateProduct(id: Int, product: Product): Result<Product> {
-        return try {
-            Result.success(httpClient.put("$ENDPOINT_PRODUCTS/$id") {
-                setBody(product)
-            }.body())
-        } catch (ex: Exception) {
-            Result.failure(ex)
-        }
-    }
-
-    override suspend fun deleteProduct(id: Int): Result<Product> {
-        return try {
-            Result.success(httpClient.delete("$ENDPOINT_PRODUCTS/$id").body())
-        } catch (ex: Exception) {
-            Result.failure(ex)
-        }
-    }
-
     override suspend fun getSingleProduct(id: Int): Result<Product> {
         return try {
             Result.success(httpClient.get("$ENDPOINT_PRODUCTS/$id").body())
